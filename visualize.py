@@ -75,6 +75,8 @@ def bar_make(db_array: np.ndarray) -> list[pyglet.shapes.Rectangle]:
 def line_make(db_array: np.ndarray) -> list[pyglet.shapes.Line]:
     item_width = int((WINDOW_WIDTH - (2 * EDGE_XPAD) - ((db_array.shape[1] - 1) * ITEM_SPACING)) / db_array.shape[1])
     lines = []
+
+
     for i in range(len(db_array[1]) - 1):
         x = EDGE_XPAD + (i * ITEM_SPACING) + (i * item_width)
         x2 = EDGE_XPAD + ((i+1) * ITEM_SPACING) + ((i+1) * item_width)
