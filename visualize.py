@@ -74,13 +74,15 @@ def bar_make(db_array: np.ndarray) -> list[pyglet.shapes.Rectangle]:
 
 def line_make(db_array: np.ndarray) -> list[pyglet.shapes.Line]:
     item_width = int((WINDOW_WIDTH - (2 * EDGE_XPAD) - ((db_array.shape[1] - 1) * ITEM_SPACING)) / db_array.shape[1])
+
     lines = []
-
-
     for i in range(len(db_array[1]) - 1):
         x = EDGE_XPAD + (i * ITEM_SPACING) + (i * item_width)
         x2 = EDGE_XPAD + ((i+1) * ITEM_SPACING) + ((i+1) * item_width)
         lines.append(pyglet.shapes.Line(x=x, y=EDGE_YPAD, x2=x2, y2=EDGE_YPAD, width=1.0, color=ITEM_COLOR))
+
+
+
     return lines
 
 
@@ -91,14 +93,7 @@ class Updater:
 
     @classmethod
     def bar_update(cls, dt: int, bars: list[pyglet.shapes.Rectangle], db_array: np.ndarray) -> None:
-        cls.vid_total_time += dt
-        cls.real_total_time += (1 / FPS)
-        time_diff = cls.vid_total_time - cls.real_total_time
-
-        # FOR TIMING TESTS
-        # print("vid total time : " + str(vid_total_time)[:6])
-        # print("real total time: " + str(real_total_time)[:6])
-        # print("vid time - real time: " + str(vid_total_time - real_total_time)[:6])
+        time_diff = Updater.get_time_gap(dt)
 
         if cls.vid_frame < db_array.shape[0]:
             for bar_index, bar in enumerate(bars):
@@ -107,18 +102,10 @@ class Updater:
 
         if time_diff > MAX_DELAY:
             Updater.bar_update(0, bars, db_array)
-        #what to do if time diff is negative? cant undo scheduled interval update
 
     @classmethod
     def line_update(cls, dt: int, lines: list[pyglet.shapes.Line], db_array: np.ndarray) -> None:
-        cls.vid_total_time += dt
-        cls.real_total_time += (1 / FPS)
-        time_diff = cls.vid_total_time - cls.real_total_time
-
-        # FOR TIMING TESTS
-        # print("vid total time : " + str(vid_total_time)[:6])
-        # print("real total time: " + str(real_total_time)[:6])
-        # print("vid time - real time: " + str(vid_total_time - real_total_time)[:6])
+        time_diff = Updater.get_time_gap(dt)
 
         if cls.vid_frame < db_array.shape[0]:
             for line_index, line in enumerate(lines):
@@ -130,6 +117,11 @@ class Updater:
 
         if time_diff > MAX_DELAY:
             Updater.line_update(0, lines, db_array)
-        #what to do if time diff is negative? cant undo scheduled interval update
+
+    @classmethod
+    def get_time_gap(cls, dt: int) -> int:
+        cls.vid_total_time += dt
+        cls.real_total_time += (1 / FPS)
+        return cls.vid_total_time - cls.real_total_time
 
 
