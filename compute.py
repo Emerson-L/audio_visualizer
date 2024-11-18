@@ -1,5 +1,5 @@
 from __future__ import annotations
-import librosa # type: ignore
+import librosa
 import numpy as np
 import visualize
 
@@ -20,18 +20,32 @@ HOP_LENGTH = 512
 #6000 - 20000 brilliance 14000
 
 def generate_frequency_bounds() -> list[int]:
-    #frequency_bounds = []
+    start_bounds = np.array([0, 20, 60, 250, 500, 2000, 4000, 6000, 9000, 12000])
+    num_interps = 30
+    frequency_bounds = np.array([])
 
-    #math
+    #x = np.linspace(1, 1000, 500).astype(int)
 
-    #frequency_bounds = [0, 10, 40, 50, 70, 90, 120, 155, 203, 250, 313, 375, 438, 500, 875, 1250, 1625, 2000, 2500,
-    #               3000, 3500, 4000, 4500, 5000, 5500, 6000, 7000, 8000, 9000, 10000, 12500, 15000, 17500, 20000]
+    # import sys
+    # np.set_printoptions(threshold=sys.maxsize)
+    # with open('test.txt', 'a') as the_file:
+    #     the_file.write(str(y))
 
-    return [0, 10, 40, 50, 70, 90, 120, 155, 203, 250, 313, 375, 438, 500, 875, 1250, 1625, 2000, 2500,
-                   3000, 3500, 4000, 4500, 5000, 5500, 6000, 7000, 8000, 9000, 10000, 12500, 15000, 17500, 20000]
+    #frequency_bounds = np.array([0, 10, 40, 50, 70, 90, 120, 155, 203, 250, 313, 375, 438, 500, 875, 1250, 1625, 2000, 2500,
+    #               3000, 3500, 4000, 4500, 5000, 5500, 6000, 7000, 8000, 9000, 10000, 12500, 15000, 17500, 20000])
+
+    for i in range(len(start_bounds) - 1):
+        #num_interps -= int(len(start_bounds) / 20)
+        if num_interps > 0:
+            interps = np.linspace(start_bounds[i], start_bounds[i+1], num_interps, endpoint=False, dtype=int)
+            frequency_bounds = np.concatenate((frequency_bounds, interps), axis = 0)
+
+    #print(frequency_bounds.size)
+    #print(frequency_bounds)
+    return frequency_bounds
 
 def read_audio(audio_path: str) -> tuple[np.ndarray, int]:
-    y, sr = librosa.load(audio_path, duration = 45, sr = 44100) #short duration for testing
+    y, sr = librosa.load(audio_path, sr = 44100) #short duration for testing
     return y, sr
 
 #Get the indices of the array of audio data that correspond with the frequencies specified by frequency_bounds
@@ -60,11 +74,17 @@ def make_db_array(y: np.ndarray, sr: int, bin_indices: list[int]) -> np.ndarray:
     song_length = librosa.get_duration(y=y, sr=sr)
     timestamps = np.linspace(0.0, song_length, int(song_length * visualize.FPS))
 
-    db_array = np.empty(shape = (timestamps.shape[0], len(bin_indices)))
+    db_array = np.empty(shape = (len(bin_indices), timestamps.shape[0]))
     for vid_frame, timestamp in enumerate(timestamps):
         audio_frame_index = int(timestamp * sr / HOP_LENGTH)
         frame_dbs = db[:, audio_frame_index]
         for vid_bin_index, audio_bin_index in enumerate(bin_indices):
-            db_array[vid_frame][vid_bin_index] = frame_dbs[audio_bin_index] + 81
+            db_array[vid_bin_index][vid_frame] = frame_dbs[audio_bin_index] + 81
+
+    # import sys
+    # f = open("test.txt", "a")
+    # np.set_printoptions(threshold=sys.maxsize)
+    # writethis = db_array[:,0]
+    # f.write(str(writethis))
 
     return db_array

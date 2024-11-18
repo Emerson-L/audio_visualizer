@@ -1,9 +1,10 @@
 import compute
 import visualize
 
-#audio_path = '/Users/emersonlange/Documents/songs/upsidedowndinner.mp3'
-audio_path = "/Users/emersonlange/Documents/songs/shangalangin.mp3"
-#audio_path = '/Users/emersonlange/Documents/songs/visualizer_testaudio.mp3'
+#audio_path = "/Users/emersonlange/Documents/songs/upsidedowndinner.mp3"
+#audio_path = "/Users/emersonlange/Documents/songs/shangalangin.mp3"
+#audio_path = "/Users/emersonlange/Documents/songs/visualizer_testaudio.mp3"
+audio_path = "/Users/emersonlange/Documents/samples/turn_on_the_lights.mp3"
 
 #Choose from bar or line
 display_mode = "line"
