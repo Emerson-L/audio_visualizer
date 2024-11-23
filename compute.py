@@ -5,7 +5,6 @@ import visualize
 
 # bin number selection (use some function to map data)
 # customizable frequency ranges for each bin
-# SET UP GITHUB
 
 HOP_LENGTH = 512
 
@@ -20,18 +19,23 @@ HOP_LENGTH = 512
 #6000 - 20000 brilliance 14000
 
 def generate_frequency_bounds() -> list[int]:
-    #frequency_bounds = []
+    start_bounds = np.array([0, 20, 60, 250, 500, 2000, 4000, 6000, 9000, 12000])
+    num_interps = 22
+    frequency_bounds = np.array([])
 
-    #math
+    for i in range(len(start_bounds) - 1):
+        #num_interps -= int(len(start_bounds) / 20)
+        if num_interps > 0:
+            interps = np.linspace(start_bounds[i], start_bounds[i+1], num_interps, endpoint=False, dtype=int)
+            frequency_bounds = np.concatenate((frequency_bounds, interps), axis = 0)
 
     #frequency_bounds = [0, 10, 40, 50, 70, 90, 120, 155, 203, 250, 313, 375, 438, 500, 875, 1250, 1625, 2000, 2500,
     #               3000, 3500, 4000, 4500, 5000, 5500, 6000, 7000, 8000, 9000, 10000, 12500, 15000, 17500, 20000]
 
-    return [0, 10, 40, 50, 70, 90, 120, 155, 203, 250, 313, 375, 438, 500, 875, 1250, 1625, 2000, 2500,
-                   3000, 3500, 4000, 4500, 5000, 5500, 6000, 7000, 8000, 9000, 10000, 12500, 15000, 17500, 20000]
+    return frequency_bounds
 
 def read_audio(audio_path: str) -> tuple[np.ndarray, int]:
-    y, sr = librosa.load(audio_path, duration = 45, sr = 44100) #short duration for testing
+    y, sr = librosa.load(audio_path, sr = 44100) #short duration for testing
     return y, sr
 
 #Get the indices of the array of audio data that correspond with the frequencies specified by frequency_bounds
@@ -46,7 +50,8 @@ def get_bin_indices(sr: int, frequency_bounds: list[int]) -> list[int]:
         if i not in bin_indices:
             bin_indices.append(i)
         else:
-            print("ditching bound at " + str(bound))
+            pass
+            #print("ditching bound at " + str(bound))
 
     #print(bin_indices)
 
@@ -54,17 +59,17 @@ def get_bin_indices(sr: int, frequency_bounds: list[int]) -> list[int]:
 
 
 #Make an array of the decibel values for each frame
-def make_db_array(y: np.ndarray, sr: int, bin_indices: list[int]) -> np.ndarray:
+def make_db_arr(y: np.ndarray, sr: int, bin_indices: list[int]) -> np.ndarray:
     s = librosa.stft(y)
     db = librosa.amplitude_to_db(np.abs(s), ref=np.max)
     song_length = librosa.get_duration(y=y, sr=sr)
     timestamps = np.linspace(0.0, song_length, int(song_length * visualize.FPS))
 
-    db_array = np.empty(shape = (timestamps.shape[0], len(bin_indices)))
+    db_arr = np.empty(shape = (timestamps.shape[0], len(bin_indices)))
     for vid_frame, timestamp in enumerate(timestamps):
         audio_frame_index = int(timestamp * sr / HOP_LENGTH)
         frame_dbs = db[:, audio_frame_index]
         for vid_bin_index, audio_bin_index in enumerate(bin_indices):
-            db_array[vid_frame][vid_bin_index] = frame_dbs[audio_bin_index] + 81
+            db_arr[vid_frame][vid_bin_index] = frame_dbs[audio_bin_index] + 81
 
-    return db_array
+    return db_arr
