@@ -4,12 +4,12 @@ A simple audio visualizer that takes in an mp3 and visualizes the frequencies of
 
 ### Demo
 
-ADD VIDEO
+https://github.com/user-attachments/assets/2c780305-f3bb-471b-b608-339fe4593936
 
 Song: [Turn on the Lights](https://www.youtube.com/watch?v=TzlEfnXL7N4) by [AI For The Culture](https://www.youtube.com/@AIForTheCulture)
-*Most/some of this song is AI generated!*
+*Most/some of this song is AI generated, wow*
 
-### Example Usage
+### How To Run
 
 - Clone repo
 - Copy path to some mp3
