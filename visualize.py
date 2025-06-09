@@ -159,9 +159,9 @@ MINIMUM_DROP_LENGTH = 5             #int, pixels
 X_SPEED_VARIANCE_MULTIPLIER = 3.0   #float, scalar (suggest 1-5)
 Y_BASE_SPEED = 600.0                #float, pixels/sec
 Y_SPEED_VARIANCE_MULTIPLIER = 15.0   #float, scalar (suggest 5-25)
-WIND_SPEED = 0.5                    #float, scalar (suggest 0-0.5)
-MAX_SPEED_VARIANCE = 20.0           #float, pixels/sec
-DEPTH_MULTIPLIER = 1.5              #float, scalar (suggest 0.5-2)
+WIND_SPEED = 0.2                    #float, scalar (suggest 0-0.5)
+MAX_SPEED_VARIANCE = 30.0           #float, pixels/sec
+DEPTH_MULTIPLIER = 2.5              #float, scalar (suggest 0.5-2)
 NUM_DROPS = 1000                     #int
 DROP_COLOR_RGBA = (167, 177, 214, 255)
 

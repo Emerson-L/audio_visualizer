@@ -7,6 +7,7 @@ import visualize
 # customizable frequency ranges for each bin
 
 HOP_LENGTH = 512
+NUM_INTERPS = 22
 
 #frequency_bounds = [60, 100, 150, 300, 700, 1100, 1800, 2600, 3400, 4500, 5200, 6100, 15000]
 
@@ -18,15 +19,14 @@ HOP_LENGTH = 512
 #4000 - 6000 presence 2000
 #6000 - 20000 brilliance 14000
 
+# Generate some bounds to display the frequencies between, linearly interpolating between each bound based on NUM_INTERPS
 def generate_frequency_bounds() -> list[int]:
     start_bounds = np.array([0, 20, 60, 250, 500, 2000, 4000, 6000, 9000, 12000])
-    num_interps = 22
     frequency_bounds = np.array([])
 
     for i in range(len(start_bounds) - 1):
-        #num_interps -= int(len(start_bounds) / 20)
-        if num_interps > 0:
-            interps = np.linspace(start_bounds[i], start_bounds[i+1], num_interps, endpoint=False, dtype=int)
+        if NUM_INTERPS > 0:
+            interps = np.linspace(start_bounds[i], start_bounds[i+1], NUM_INTERPS, endpoint=False, dtype=int)
             frequency_bounds = np.concatenate((frequency_bounds, interps), axis = 0)
 
     #frequency_bounds = [0, 10, 40, 50, 70, 90, 120, 155, 203, 250, 313, 375, 438, 500, 875, 1250, 1625, 2000, 2500,
