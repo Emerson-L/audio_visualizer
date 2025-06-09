@@ -8,7 +8,7 @@ https://github.com/user-attachments/assets/2c780305-f3bb-471b-b608-339fe4593936
 
 Song: [Turn on the Lights](https://www.youtube.com/watch?v=TzlEfnXL7N4) by [AI For The Culture](https://www.youtube.com/@AIForTheCulture)
 
-*Most/some of this song is AI generated, wow*
+*Most/some of this song is AI generated. And JPEGMAFIA sampled it.*
 
 ### How To Run
 
