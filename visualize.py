@@ -8,6 +8,7 @@ import random
 import time
 import math
 
+# Ideas
 #color fade based on intensity of new movement? like if a sudden thing happens it should be brighter and otherwise be fading
     #keep track of change in db wrt time, adjust brightness based on amount of change
 #combine bar_update and line_update, theres a lot of duplicate lines
@@ -26,24 +27,17 @@ def display_window(audio_path: str, db_arr: np.ndarray, display_mode: str) -> No
     window = pyglet.window.Window(width=WINDOW_WIDTH, height=WINDOW_HEIGHT)
     background = pyglet.shapes.Rectangle(x=0, y=0, width=WINDOW_WIDTH, height=WINDOW_HEIGHT, color=BACKGROUND_COLOR)
 
-    # label = pyglet.text.Label('Hello, world',
-    #                         font_name='Times New Roman',
-    #                         font_size=36,
-    #                         x=window.width//2, y=window.height//2,
-    #                         anchor_x='center', anchor_y='center')
-
+    frame_min, frame_max = get_min_max_frames(db_arr)
     if display_mode == "bar":
         objects = bar_make(db_arr)
-        frame_min, frame_max = get_min_max_frames(db_arr)
-        print(frame_min, frame_max)
         pyglet.clock.schedule_interval(Updater.bar_update, (1 / FPS) / 1.4, objects, db_arr)
-        pyglet.clock.schedule_interval(Updater.shader_update, (1 / FPS) / 1.4, frame_min, frame_max)
     elif display_mode == "line":
         objects = line_make(db_arr)
         pyglet.clock.schedule_interval(Updater.line_update, (1 / FPS) / 1.4, objects, db_arr)
     else:
         msg = "Invalid display mode. Choose either 'bar' or 'line'"
         raise ValueError(msg)
+    pyglet.clock.schedule_interval(Updater.shader_update, (1 / FPS) / 1.4, frame_min, frame_max)
 
     @window.event
     def on_draw() -> None:
@@ -76,8 +70,7 @@ def line_make(db_arr: np.ndarray) -> list[pyglet.shapes.Line]:
     for i in range(len(db_arr[1]) - 1):
         x = EDGE_XPAD + (i * line_xlen)
         x2 = EDGE_XPAD + ((i+1) * line_xlen)
-        lines.append(pyglet.shapes.Line(x=x, y=EDGE_YPAD, x2=x2, y2=EDGE_YPAD, width=2.0, color=ITEM_COLOR))
-
+        lines.append(pyglet.shapes.Line(x=x, y=EDGE_YPAD, x2=x2, y2=EDGE_YPAD, width=6.0, color=ITEM_COLOR))
     return lines
 
 def get_min_max_frames(db_arr: np.ndarray) -> tuple[int, int]:
@@ -115,10 +108,13 @@ class Updater:
         time_diff = Updater.get_time_gap(dt)
 
         if cls.vid_frame < db_arr.shape[0]:
+            frame_intensity = 0
             for line_index, line in enumerate(lines):
                 line.y = db_arr[cls.vid_frame][line_index] * ITEM_YSCALE
                 line.y2 = db_arr[cls.vid_frame][line_index+1] * ITEM_YSCALE
+                frame_intensity += db_arr[cls.vid_frame][line_index]
             cls.vid_frame += 1
+            cls.song_intensity = frame_intensity
 
         if time_diff > MAX_DELAY:
             Updater.line_update(0, lines, db_arr)

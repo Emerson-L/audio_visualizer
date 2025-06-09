@@ -3,6 +3,7 @@ import librosa # type: ignore
 import numpy as np
 import visualize
 
+# Ideas
 # bin number selection (use some function to map data)
 # customizable frequency ranges for each bin
 
@@ -35,7 +36,7 @@ def generate_frequency_bounds() -> list[int]:
     return frequency_bounds
 
 def read_audio(audio_path: str) -> tuple[np.ndarray, int]:
-    y, sr = librosa.load(audio_path, sr = 44100) #short duration for testing
+    y, sr = librosa.load(audio_path, sr = 44100)
     return y, sr
 
 #Get the indices of the array of audio data that correspond with the frequencies specified by frequency_bounds
@@ -52,8 +53,6 @@ def get_bin_indices(sr: int, frequency_bounds: list[int]) -> list[int]:
         else:
             pass
             #print("ditching bound at " + str(bound))
-
-    #print(bin_indices)
 
     return bin_indices
 
